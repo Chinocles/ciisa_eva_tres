@@ -11,4 +11,3 @@ taskRoutes.put('/:idTask', taskcontroller.update)
 taskRoutes.delete('/:idTask', taskcontroller.delete)
 
 export default taskRoutes
-

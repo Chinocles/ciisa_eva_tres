@@ -1,11 +1,11 @@
 import { Request, Response } from "express"
-
 export default class HealthController {
   public readonly info = (_req: Request, res: Response) => {
     res.json({
       name: process.env.npm_package_name,
       version: process.env.npm_package_version,
-      description: process.env.npm_package_description
+      description: process.env.npm_package_description,
+      info: "Trabajo para Evaluación 3 y Final de Taller App Empresariales, Profesor Belmar."
     })
   }
 

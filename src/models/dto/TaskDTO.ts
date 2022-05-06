@@ -1,8 +1,8 @@
 export interface BaseTaskDTO {
-idTask?: number 
-title: string
-content: string
-}
+  idTask?: number 
+  title: string
+  content: string
+  }
 
 export interface TaskDTO extends BaseTaskDTO {
   idTask: number
@@ -10,11 +10,11 @@ export interface TaskDTO extends BaseTaskDTO {
   content: string
   done: boolean
   userId: number | null
-}
+  }
 
 export interface CreateTaskDTO extends BaseTaskDTO {
   title: string
   content: string
-}
+  }
 
 export interface UpdateTaskDTO extends Partial<BaseTaskDTO>{ }

@@ -4,23 +4,18 @@ import { CreateTaskDTO, TaskDTO, UpdateTaskDTO } from "../dto/TaskDTO";
 const prisma = new PrismaClient()
 
 export default class TaskRepository {
-
   private userId: number
-
-  constructor(userId: number) {
-
-    this.userId = userId
-  }
+  
+  constructor(userId: number) { this.userId = userId}
 
   public readonly findAll = async (): Promise<TaskDTO[]> => {
-
     const tasks = await prisma.task.findMany({
       where : {
         userId: this.userId  
       }
     })
-  return tasks
-  }
+    return tasks
+    }
 
   public readonly findById = async (idTask: number):Promise<TaskDTO | undefined> => {
     const task = await prisma.task.findFirst({
@@ -31,7 +26,7 @@ export default class TaskRepository {
     })
     if (!task) return
     return task
-  }
+    }
 
   public readonly create = async (task: CreateTaskDTO): Promise<TaskDTO>=> {
     const newTask = await prisma.task.create(
@@ -42,7 +37,7 @@ export default class TaskRepository {
       }}
     )
     return newTask
-  }
+    }
 
   public readonly update = async (idTask: number, task: UpdateTaskDTO): Promise<void> => {
     await prisma.task.updateMany({
@@ -53,15 +48,10 @@ export default class TaskRepository {
   }
 
   public readonly delete = async (idTask: number) => {
-await prisma.task.deleteMany({
+  await prisma.task.deleteMany({
   where: { idTask,
-    userId : this.userId
-
+    userId : this.userId }
+    })
   }
-
-})
-  }
-
 
 }
-
