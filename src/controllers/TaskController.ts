@@ -60,7 +60,7 @@ public readonly delete = async (req: Request, res: Response) => {
   const user = req.user as UserTokenPayload
   const repository = new TaskRepository(parseInt (user.sub))
   await repository.delete(parseInt (idTask))
-  res.sendStatus(204)
+  res.sendStatus(203)
   }
 
 }
