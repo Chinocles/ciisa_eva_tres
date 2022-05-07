@@ -18,14 +18,20 @@ public readonly loginUser = async (req: Request, res:Response) => {
 
     const repository = new UserRepository()
 
-    const userFromDB = await repository.findByEmail(credential.email )
+    try {
+      const userFromDB = await repository.findByEmail(credential.email )
 
     if(!userFromDB || !bcrypt.compareSync(credential.password, userFromDB.password)){
         res.status(401).json({message: 'Invalid credentials'})
     return
-  }
+     }
     const token = generateToken(userFromDB)
     res.json({token})
+    } catch (error) {
+      console.log(error)
+      res.status(500).json({message:'Something went wrong' })
+    }
+    
 }
 
 public readonly registerUser = async (req: Request, res: Response) => {
@@ -38,7 +44,18 @@ public readonly registerUser = async (req: Request, res: Response) => {
     }
   const hashedPass = bcrypt.hashSync(user.password, 10)
   const repository = new UserRepository()
-  const newUser = await repository.create({ ...user, password: hashedPass })
-  res.status(201).json(newUser)
+
+  try {
+    const newUser = await repository.create({ ...user, password: hashedPass })
+    res.status(201).json(newUser)
+  } catch (error){
+    if (error.code === 'P2002'){
+      res.status(409).json({message: 'User already exists'})
+      return
+    }
+    console.log(error)
+    console.log ('Error code:', error.code)
+    res.status(500).json({ message: 'Something went wrong'})
   }
+ }
 }

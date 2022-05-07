@@ -8,20 +8,32 @@ export default class TaskController {
 public readonly getAll = async (req: Request, res: Response) => {
   const user = req.user as UserTokenPayload
   const repository = new TaskRepository( parseInt(user.sub))
-  const tasks: TaskDTO [] = await repository.findAll()
-  res.json(tasks)
+
+  try{ 
+    const tasks: TaskDTO [] = await repository.findAll()
+    res.json(tasks)
+  } catch (error) {
+    console.log(error)
+    res.status(500).json({message: 'Something went wrong'})
+  }
 }
 
 public readonly getById = async (req: Request, res: Response) => {
   const  { idTask } = req.params
   const user = req.user as UserTokenPayload
   const repository = new TaskRepository( parseInt(user.sub))
-  const task = await repository.findById(parseInt(idTask))
+  
+  try { const task = await repository.findById(parseInt(idTask))
     if (!task){
       res.status(404).json({message: 'Task not found'})
     return
-  }
-  res.json(task)
+    }
+    res.json(task)
+     } catch (error) {
+        console.log(error)
+        res.status(500).json({message: 'Something went wrong'})
+      }
+  
 }
 
 public readonly create = async (req: Request, res: Response) => {
@@ -34,9 +46,18 @@ public readonly create = async (req: Request, res: Response) => {
 }
   const user = req.user as UserTokenPayload
   const repository = new TaskRepository(parseInt(user.sub))
-  const newTask = await repository.create(task)
-
-  res.json({ newTask })
+    try{
+    const newTask = await repository.create(task)
+    res.json({ newTask })
+    } catch (error) {
+      if (error.code === 'P2002') {
+      res.status(409).json({message: 'Tasks already exists'})
+      return
+    }
+    console.log(error)
+    console.log ('Error code:', error.code)
+    res.status(500).json({ message: 'Something went wrong'})
+  }
 }
 
 public readonly update = async (req: Request, res: Response) => {
@@ -51,16 +72,32 @@ public readonly update = async (req: Request, res: Response) => {
   }
   const user = req.user as UserTokenPayload
   const repository = new TaskRepository(parseInt(user.sub))
-  await repository.update( parseInt(idTask), task)
-  res.sendStatus(204)
+
+  try{
+    await repository.update( parseInt(idTask), task)
+    res.sendStatus(204)
+  } catch (error) {
+      if (error.code === 'P2002') {
+      res.status(409).json({message: 'Tasks already exists'})
+      return
+  }
+
+  console.log(error)
+  console.log ('Error code:', error.code)
+  res.status(500).json({ message: 'Something went wrong'})
+  }
 }
 
 public readonly delete = async (req: Request, res: Response) => {
   const { idTask } = req.params
   const user = req.user as UserTokenPayload
   const repository = new TaskRepository(parseInt (user.sub))
-  await repository.delete(parseInt (idTask) )
-  res.sendStatus(204)
+  try {
+    await repository.delete(parseInt (idTask))
+    res.sendStatus(204)
+  } catch (error) {
+    console.log(error)
+    res.status(500).json({message: 'Something went wrong'})
+   }
   }
-
 }
